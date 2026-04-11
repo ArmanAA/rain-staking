@@ -3,6 +3,7 @@ module github.com/ArmanAA/rain-staking
 go 1.25.0
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.28.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/shopspring/decimal v1.4.0
