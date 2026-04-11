@@ -1,0 +1,51 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    environment:
+      DATABASE_URL: postgres://rain:rain@postgres:5432/rain_staking?sslmode=disable
+      STAKING_PROVIDER: mock
+      GRPC_PORT: 9090
+      HTTP_PORT: 8080
+      REWARD_POLL_INTERVAL: 30s
+      LOG_LEVEL: info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: rain
+      POSTGRES_PASSWORD: rain
+      POSTGRES_DB: rain_staking
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rain -d rain_staking"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    image: migrate/migrate:v4.17.0
+    volumes:
+      - ./migrations:/migrations
+    command:
+      [
+        "-path", "/migrations",
+        "-database", "postgres://rain:rain@postgres:5432/rain_staking?sslmode=disable",
+        "up",
+      ]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
