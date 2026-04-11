@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS audit_events;
+DROP TABLE IF EXISTS rewards;
+DROP TABLE IF EXISTS stakes;
+DROP TABLE IF EXISTS balances;
