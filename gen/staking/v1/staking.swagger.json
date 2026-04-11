@@ -1,0 +1,575 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "staking/v1/staking.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "StakingService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/customers/{customerId}/balances": {
+      "get": {
+        "summary": "ListBalances retrieves all balances for a customer.",
+        "operationId": "StakingService_ListBalances",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListBalancesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StakingService"
+        ]
+      }
+    },
+    "/v1/customers/{customerId}/balances/{asset}": {
+      "get": {
+        "summary": "GetBalance retrieves a customer's balance for a specific asset.",
+        "operationId": "StakingService_GetBalance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetBalanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "asset",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StakingService"
+        ]
+      }
+    },
+    "/v1/customers/{customerId}/stakes": {
+      "get": {
+        "summary": "ListStakes retrieves all staking positions for a customer.",
+        "operationId": "StakingService_ListStakes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListStakesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "state",
+            "description": "Optional filter by state",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StakingService"
+        ]
+      }
+    },
+    "/v1/stakes": {
+      "post": {
+        "summary": "CreateStake initiates a new staking position for a customer.",
+        "operationId": "StakingService_CreateStake",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateStakeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateStakeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StakingService"
+        ]
+      }
+    },
+    "/v1/stakes/{stakeId}": {
+      "get": {
+        "summary": "GetStake retrieves a specific staking position by ID.",
+        "operationId": "StakingService_GetStake",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetStakeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stakeId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StakingService"
+        ]
+      }
+    },
+    "/v1/stakes/{stakeId}/rewards": {
+      "get": {
+        "summary": "GetRewardsSummary retrieves the total rewards summary for a staking position.",
+        "operationId": "StakingService_GetRewardsSummary",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetRewardsSummaryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stakeId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StakingService"
+        ]
+      }
+    },
+    "/v1/stakes/{stakeId}/rewards/history": {
+      "get": {
+        "summary": "ListRewardHistory retrieves the detailed reward history for a staking position.",
+        "operationId": "StakingService_ListRewardHistory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListRewardHistoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stakeId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StakingService"
+        ]
+      }
+    },
+    "/v1/stakes/{stakeId}/unstake": {
+      "post": {
+        "summary": "Unstake initiates the unstaking process for an active staking position.",
+        "operationId": "StakingService_Unstake",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UnstakeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "stakeId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StakingServiceUnstakeBody"
+            }
+          }
+        ],
+        "tags": [
+          "StakingService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "StakingServiceUnstakeBody": {
+      "type": "object",
+      "properties": {
+        "idempotencyKey": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Balance": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "customerId": {
+          "type": "string"
+        },
+        "asset": {
+          "type": "string"
+        },
+        "available": {
+          "type": "string"
+        },
+        "staked": {
+          "type": "string"
+        },
+        "pending": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1CreateStakeRequest": {
+      "type": "object",
+      "properties": {
+        "customerId": {
+          "type": "string"
+        },
+        "asset": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string",
+          "title": "Decimal string (e.g., \"32.0\")"
+        },
+        "idempotencyKey": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateStakeResponse": {
+      "type": "object",
+      "properties": {
+        "stake": {
+          "$ref": "#/definitions/v1Stake"
+        }
+      }
+    },
+    "v1GetBalanceResponse": {
+      "type": "object",
+      "properties": {
+        "balance": {
+          "$ref": "#/definitions/v1Balance"
+        }
+      }
+    },
+    "v1GetRewardsSummaryResponse": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "$ref": "#/definitions/v1RewardsSummary"
+        }
+      }
+    },
+    "v1GetStakeResponse": {
+      "type": "object",
+      "properties": {
+        "stake": {
+          "$ref": "#/definitions/v1Stake"
+        }
+      }
+    },
+    "v1ListBalancesResponse": {
+      "type": "object",
+      "properties": {
+        "balances": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Balance"
+          }
+        }
+      }
+    },
+    "v1ListRewardHistoryResponse": {
+      "type": "object",
+      "properties": {
+        "rewards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Reward"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ListStakesResponse": {
+      "type": "object",
+      "properties": {
+        "stakes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Stake"
+          }
+        },
+        "nextPageToken": {
+          "type": "string"
+        }
+      }
+    },
+    "v1Reward": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "stakeId": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string"
+        },
+        "cumulativeAmount": {
+          "type": "string"
+        },
+        "rewardDate": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1RewardsSummary": {
+      "type": "object",
+      "properties": {
+        "stakeId": {
+          "type": "string"
+        },
+        "totalRewards": {
+          "type": "string"
+        },
+        "estimatedApy": {
+          "type": "string"
+        },
+        "rewardCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "lastRewardAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1Stake": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "customerId": {
+          "type": "string"
+        },
+        "asset": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/definitions/v1StakeState"
+        },
+        "providerRef": {
+          "type": "string"
+        },
+        "validator": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1StakeState": {
+      "type": "string",
+      "enum": [
+        "STAKE_STATE_UNSPECIFIED",
+        "STAKE_STATE_PENDING",
+        "STAKE_STATE_DELEGATING",
+        "STAKE_STATE_ACTIVE",
+        "STAKE_STATE_UNSTAKING",
+        "STAKE_STATE_WITHDRAWN",
+        "STAKE_STATE_FAILED"
+      ],
+      "default": "STAKE_STATE_UNSPECIFIED"
+    },
+    "v1UnstakeResponse": {
+      "type": "object",
+      "properties": {
+        "stake": {
+          "$ref": "#/definitions/v1Stake"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,201 @@
+syntax = "proto3";
+
+package staking.v1;
+
+option go_package = "github.com/ArmanAA/rain-staking/gen/staking/v1;stakingv1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+// StakingService provides operations for managing customer staking positions,
+// balances, and rewards.
+service StakingService {
+  // CreateStake initiates a new staking position for a customer.
+  rpc CreateStake(CreateStakeRequest) returns (CreateStakeResponse) {
+    option (google.api.http) = {
+      post: "/v1/stakes"
+      body: "*"
+    };
+  }
+
+  // GetStake retrieves a specific staking position by ID.
+  rpc GetStake(GetStakeRequest) returns (GetStakeResponse) {
+    option (google.api.http) = {
+      get: "/v1/stakes/{stake_id}"
+    };
+  }
+
+  // ListStakes retrieves all staking positions for a customer.
+  rpc ListStakes(ListStakesRequest) returns (ListStakesResponse) {
+    option (google.api.http) = {
+      get: "/v1/customers/{customer_id}/stakes"
+    };
+  }
+
+  // Unstake initiates the unstaking process for an active staking position.
+  rpc Unstake(UnstakeRequest) returns (UnstakeResponse) {
+    option (google.api.http) = {
+      post: "/v1/stakes/{stake_id}/unstake"
+      body: "*"
+    };
+  }
+
+  // GetBalance retrieves a customer's balance for a specific asset.
+  rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse) {
+    option (google.api.http) = {
+      get: "/v1/customers/{customer_id}/balances/{asset}"
+    };
+  }
+
+  // ListBalances retrieves all balances for a customer.
+  rpc ListBalances(ListBalancesRequest) returns (ListBalancesResponse) {
+    option (google.api.http) = {
+      get: "/v1/customers/{customer_id}/balances"
+    };
+  }
+
+  // GetRewardsSummary retrieves the total rewards summary for a staking position.
+  rpc GetRewardsSummary(GetRewardsSummaryRequest) returns (GetRewardsSummaryResponse) {
+    option (google.api.http) = {
+      get: "/v1/stakes/{stake_id}/rewards"
+    };
+  }
+
+  // ListRewardHistory retrieves the detailed reward history for a staking position.
+  rpc ListRewardHistory(ListRewardHistoryRequest) returns (ListRewardHistoryResponse) {
+    option (google.api.http) = {
+      get: "/v1/stakes/{stake_id}/rewards/history"
+    };
+  }
+}
+
+// --- Stake Messages ---
+
+message CreateStakeRequest {
+  string customer_id = 1;
+  string asset = 2;
+  string amount = 3; // Decimal string (e.g., "32.0")
+  string idempotency_key = 4;
+}
+
+message CreateStakeResponse {
+  Stake stake = 1;
+}
+
+message GetStakeRequest {
+  string stake_id = 1;
+}
+
+message GetStakeResponse {
+  Stake stake = 1;
+}
+
+message ListStakesRequest {
+  string customer_id = 1;
+  string state = 2; // Optional filter by state
+  int32 page_size = 3;
+  string page_token = 4;
+}
+
+message ListStakesResponse {
+  repeated Stake stakes = 1;
+  string next_page_token = 2;
+}
+
+message UnstakeRequest {
+  string stake_id = 1;
+  string idempotency_key = 2;
+}
+
+message UnstakeResponse {
+  Stake stake = 1;
+}
+
+message Stake {
+  string id = 1;
+  string customer_id = 2;
+  string asset = 3;
+  string amount = 4;
+  StakeState state = 5;
+  string provider_ref = 6;
+  string validator = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+enum StakeState {
+  STAKE_STATE_UNSPECIFIED = 0;
+  STAKE_STATE_PENDING = 1;
+  STAKE_STATE_DELEGATING = 2;
+  STAKE_STATE_ACTIVE = 3;
+  STAKE_STATE_UNSTAKING = 4;
+  STAKE_STATE_WITHDRAWN = 5;
+  STAKE_STATE_FAILED = 6;
+}
+
+// --- Balance Messages ---
+
+message GetBalanceRequest {
+  string customer_id = 1;
+  string asset = 2;
+}
+
+message GetBalanceResponse {
+  Balance balance = 1;
+}
+
+message ListBalancesRequest {
+  string customer_id = 1;
+}
+
+message ListBalancesResponse {
+  repeated Balance balances = 1;
+}
+
+message Balance {
+  string id = 1;
+  string customer_id = 2;
+  string asset = 3;
+  string available = 4;
+  string staked = 5;
+  string pending = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+// --- Reward Messages ---
+
+message GetRewardsSummaryRequest {
+  string stake_id = 1;
+}
+
+message GetRewardsSummaryResponse {
+  RewardsSummary summary = 1;
+}
+
+message RewardsSummary {
+  string stake_id = 1;
+  string total_rewards = 2;
+  string estimated_apy = 3;
+  int32 reward_count = 4;
+  google.protobuf.Timestamp last_reward_at = 5;
+}
+
+message ListRewardHistoryRequest {
+  string stake_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListRewardHistoryResponse {
+  repeated Reward rewards = 1;
+  string next_page_token = 2;
+}
+
+message Reward {
+  string id = 1;
+  string stake_id = 2;
+  string amount = 3;
+  string cumulative_amount = 4;
+  string reward_date = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
