@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"strings"
 	"sync"
 	"time"
 
@@ -42,7 +43,9 @@ func (p *StakingProvider) Stake(ctx context.Context, req port.StakeRequest) (*po
 	defer p.mu.Unlock()
 
 	providerRef := fmt.Sprintf("mock-%s", uuid.New().String()[:8])
-	validator := fmt.Sprintf("0x%s", uuid.New().String()[:40])
+	// Ethereum addresses are 40 hex chars; strip hyphens from two UUIDs to get enough hex.
+	hex := strings.ReplaceAll(uuid.New().String()+uuid.New().String(), "-", "")
+	validator := fmt.Sprintf("0x%s", hex[:40])
 
 	p.stakes[providerRef] = &mockStake{
 		providerRef:  providerRef,
