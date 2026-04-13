@@ -3,11 +3,16 @@ package grpc
 import (
 	"context"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+
+	"github.com/ArmanAA/rain-staking/internal/auth"
 )
 
 type contextKey string
@@ -50,6 +55,36 @@ func LoggingInterceptor(logger *slog.Logger) grpc.UnaryServerInterceptor {
 		}
 
 		return resp, err
+	}
+}
+
+// AuthInterceptor validates JWT tokens from the Authorization metadata and
+// stores the authenticated customer ID in the request context.
+func AuthInterceptor(jwtSecret string) grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
+		md, ok := metadata.FromIncomingContext(ctx)
+		if !ok {
+			return nil, status.Error(codes.Unauthenticated, "missing metadata")
+		}
+
+		values := md.Get("authorization")
+		if len(values) == 0 {
+			return nil, status.Error(codes.Unauthenticated, "missing authorization header")
+		}
+
+		token := values[0]
+		if !strings.HasPrefix(token, "Bearer ") {
+			return nil, status.Error(codes.Unauthenticated, "invalid authorization format")
+		}
+		token = strings.TrimPrefix(token, "Bearer ")
+
+		claims, err := auth.ValidateToken(token, jwtSecret)
+		if err != nil {
+			return nil, status.Error(codes.Unauthenticated, "invalid or expired token")
+		}
+
+		ctx = auth.NewContextWithCustomerID(ctx, claims.CustomerID)
+		return handler(ctx, req)
 	}
 }
 

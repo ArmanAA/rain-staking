@@ -36,6 +36,10 @@ func NewStakingHandler(
 }
 
 func (h *StakingHandler) CreateStake(ctx context.Context, req *pb.CreateStakeRequest) (*pb.CreateStakeResponse, error) {
+	if err := authorizeCustomer(ctx, req.CustomerId); err != nil {
+		return nil, err
+	}
+
 	stake, err := h.stakingSvc.CreateStake(ctx, service.CreateStakeRequest{
 		CustomerID:     req.CustomerId,
 		Asset:          req.Asset,
@@ -53,10 +57,17 @@ func (h *StakingHandler) GetStake(ctx context.Context, req *pb.GetStakeRequest) 
 	if err != nil {
 		return nil, domainErrorToGRPC(err)
 	}
+	if err := authorizeCustomer(ctx, stake.CustomerID); err != nil {
+		return nil, err
+	}
 	return &pb.GetStakeResponse{Stake: stakeToProto(stake)}, nil
 }
 
 func (h *StakingHandler) ListStakes(ctx context.Context, req *pb.ListStakesRequest) (*pb.ListStakesResponse, error) {
+	if err := authorizeCustomer(ctx, req.CustomerId); err != nil {
+		return nil, err
+	}
+
 	var stateFilter *domain.StakeState
 	if req.State != "" {
 		state := domain.StakeState(req.State)
@@ -82,6 +93,15 @@ func (h *StakingHandler) ListStakes(ctx context.Context, req *pb.ListStakesReque
 }
 
 func (h *StakingHandler) Unstake(ctx context.Context, req *pb.UnstakeRequest) (*pb.UnstakeResponse, error) {
+	// Verify ownership before unstaking
+	existing, err := h.stakingSvc.GetStake(ctx, req.StakeId)
+	if err != nil {
+		return nil, domainErrorToGRPC(err)
+	}
+	if err := authorizeCustomer(ctx, existing.CustomerID); err != nil {
+		return nil, err
+	}
+
 	stake, err := h.stakingSvc.Unstake(ctx, req.StakeId, req.IdempotencyKey)
 	if err != nil {
 		return nil, domainErrorToGRPC(err)
@@ -90,6 +110,10 @@ func (h *StakingHandler) Unstake(ctx context.Context, req *pb.UnstakeRequest) (*
 }
 
 func (h *StakingHandler) CreateBalance(ctx context.Context, req *pb.CreateBalanceRequest) (*pb.CreateBalanceResponse, error) {
+	if err := authorizeCustomer(ctx, req.CustomerId); err != nil {
+		return nil, err
+	}
+
 	amount, err := decimal.NewFromString(req.Available)
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid amount")
@@ -103,6 +127,10 @@ func (h *StakingHandler) CreateBalance(ctx context.Context, req *pb.CreateBalanc
 }
 
 func (h *StakingHandler) GetBalance(ctx context.Context, req *pb.GetBalanceRequest) (*pb.GetBalanceResponse, error) {
+	if err := authorizeCustomer(ctx, req.CustomerId); err != nil {
+		return nil, err
+	}
+
 	balance, err := h.balanceSvc.GetBalance(ctx, req.CustomerId, req.Asset)
 	if err != nil {
 		return nil, domainErrorToGRPC(err)
@@ -111,6 +139,10 @@ func (h *StakingHandler) GetBalance(ctx context.Context, req *pb.GetBalanceReque
 }
 
 func (h *StakingHandler) ListBalances(ctx context.Context, req *pb.ListBalancesRequest) (*pb.ListBalancesResponse, error) {
+	if err := authorizeCustomer(ctx, req.CustomerId); err != nil {
+		return nil, err
+	}
+
 	balances, err := h.balanceSvc.ListBalances(ctx, req.CustomerId)
 	if err != nil {
 		return nil, domainErrorToGRPC(err)
@@ -125,6 +157,15 @@ func (h *StakingHandler) ListBalances(ctx context.Context, req *pb.ListBalancesR
 }
 
 func (h *StakingHandler) GetRewardsSummary(ctx context.Context, req *pb.GetRewardsSummaryRequest) (*pb.GetRewardsSummaryResponse, error) {
+	// Verify ownership via stake lookup
+	stake, err := h.stakingSvc.GetStake(ctx, req.StakeId)
+	if err != nil {
+		return nil, domainErrorToGRPC(err)
+	}
+	if err := authorizeCustomer(ctx, stake.CustomerID); err != nil {
+		return nil, err
+	}
+
 	summary, err := h.rewardSvc.GetSummary(ctx, req.StakeId)
 	if err != nil {
 		return nil, domainErrorToGRPC(err)
@@ -140,6 +181,15 @@ func (h *StakingHandler) GetRewardsSummary(ctx context.Context, req *pb.GetRewar
 }
 
 func (h *StakingHandler) ListRewardHistory(ctx context.Context, req *pb.ListRewardHistoryRequest) (*pb.ListRewardHistoryResponse, error) {
+	// Verify ownership via stake lookup
+	stake, err := h.stakingSvc.GetStake(ctx, req.StakeId)
+	if err != nil {
+		return nil, domainErrorToGRPC(err)
+	}
+	if err := authorizeCustomer(ctx, stake.CustomerID); err != nil {
+		return nil, err
+	}
+
 	limit := int(req.PageSize)
 	if limit <= 0 {
 		limit = 20

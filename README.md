@@ -14,7 +14,6 @@ A microservice that enables customers to stake Ethereum through BitGo's custodia
 - Audit trail of all state changes
 
 **Out of scope (assumed to exist in Rain's platform):**
-- User authentication and authorization
 - Crypto deposits and withdrawals
 - Frontend UI
 - KYC/compliance checks
@@ -78,8 +77,13 @@ Dependencies flow inward. The domain layer has zero external dependencies.
 # Start everything: Postgres + migrations + app
 docker compose up -d
 
-# Verify it's running
-curl http://localhost:8080/v1/customers/550e8400-e29b-41d4-a716-446655440000/balances
+# Generate a JWT token for testing
+make token
+# Copy the output token
+
+# Verify it's running (replace <token> with the output above)
+curl -H "Authorization: Bearer <token>" \
+  http://localhost:8080/v1/customers/550e8400-e29b-41d4-a716-446655440000/balances
 ```
 
 ### Local Development
@@ -107,18 +111,68 @@ export BITGO_WALLET_ID=your-wallet-id
 export BITGO_COIN=hteth
 ```
 
+## Authentication & Security
+
+All API endpoints require a JWT Bearer token. The service implements a layered security model:
+
+### Generating a Token
+
+```bash
+# Default: generates token for test customer with dev secret
+make token
+
+# Custom customer ID
+go run cmd/tokengen/main.go --customer-id <uuid>
+
+# Custom secret and expiry
+go run cmd/tokengen/main.go --secret my-secret --expiry 72h
+```
+
+### Using the Token
+
+Include the token as a Bearer token in the `Authorization` header:
+
+```bash
+TOKEN=$(make token)
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/v1/customers/.../balances
+```
+
+### Security Architecture
+
+| Layer | What | How |
+|-------|------|-----|
+| **Authentication** | Verify caller identity | JWT validation via gRPC interceptor. Extracts `customer_id` from token claims and stores in request context. |
+| **Authorization** | Verify resource ownership | Handler-level checks ensure callers can only access their own stakes, balances, and rewards. |
+| **Input Validation** | Reject malformed requests | gRPC interceptor validates UUID formats, required fields, decimal amounts, and page size bounds before handlers run. |
+| **Audit Trail** | Record all mutations | Append-only `audit_events` table logs every state change with actor, timestamp, and event data. |
+| **Data Integrity** | Prevent corruption | Optimistic locking (version field), CHECK constraints on balances, UNIQUE idempotency keys. |
+
+### Security Design Decisions
+
+- **NotFound over PermissionDenied:** When a user requests a resource they don't own, the API returns `404 Not Found` instead of `403 Forbidden`. This prevents attackers from enumerating valid resource IDs by probing with different tokens.
+- **Interceptor chain ordering:** Recovery (catches panics) -> Logging (records all attempts, including failed auth) -> Authentication (rejects unauthenticated) -> Validation (rejects malformed). This ensures failed auth attempts are always logged.
+- **Gateway routing through gRPC:** The HTTP gateway dials back to the gRPC server over loopback (`RegisterStakingServiceHandlerFromEndpoint`), ensuring all HTTP requests pass through the full interceptor chain including auth. The alternative (`RegisterStakingServiceHandlerServer`) bypasses interceptors entirely.
+- **Auth in interceptor, authz in handler:** Authentication is cross-cutting (every request needs it), so it belongs in an interceptor. Authorization requires business context (looking up stake ownership), so it belongs in the handler where that data is available.
+
 ## API Examples
+
+All examples below assume `TOKEN` is set:
+```bash
+export TOKEN=$(make token)
+```
 
 ### Create a balance (seed a customer)
 ```bash
-curl -X POST http://localhost:8080/v1/customers/550e8400-e29b-41d4-a716-446655440000/balances/ETH \
+curl -X POST http://localhost:8080/v1/customers/550e8400-e29b-41d4-a716-446655440000/balances \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"customer_id":"550e8400-e29b-41d4-a716-446655440000","asset":"ETH","available":"100.0"}'
+  -d '{"asset":"ETH","available":"100.0"}'
 ```
 
 ### Stake 32 ETH
 ```bash
 curl -X POST http://localhost:8080/v1/stakes \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
     "customer_id": "550e8400-e29b-41d4-a716-446655440000",
@@ -130,18 +184,22 @@ curl -X POST http://localhost:8080/v1/stakes \
 
 ### Check balance
 ```bash
-curl http://localhost:8080/v1/customers/550e8400-e29b-41d4-a716-446655440000/balances/ETH
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/v1/customers/550e8400-e29b-41d4-a716-446655440000/balances/ETH
 ```
 
 ### View reward history
 ```bash
-curl http://localhost:8080/v1/stakes/{stake_id}/rewards/history
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/v1/stakes/{stake_id}/rewards/history
 ```
 
 ### gRPC (with grpcurl)
 ```bash
 grpcurl -plaintext localhost:9090 list
-grpcurl -plaintext -d '{"customer_id":"550e8400-e29b-41d4-a716-446655440000"}' \
+grpcurl -plaintext \
+  -H "authorization: Bearer $TOKEN" \
+  -d '{"customer_id":"550e8400-e29b-41d4-a716-446655440000"}' \
   localhost:9090 staking.v1.StakingService/ListStakes
 ```
 
@@ -152,7 +210,9 @@ Import `postman/rain-staking.postman_collection.json` into Postman for a pre-bui
 ## Project Structure
 
 ```
-├── cmd/stakingd/              # Application entry point, DI wiring
+├── cmd/
+│   ├── stakingd/              # Application entry point, DI wiring
+│   └── tokengen/              # JWT token generator for testing
 ├── internal/
 │   ├── domain/                # Pure business logic, no external deps
 │   │   ├── stake.go           # Stake entity with state machine
@@ -160,6 +220,7 @@ Import `postman/rain-staking.postman_collection.json` into Postman for a pre-bui
 │   │   ├── reward.go          # Reward value object
 │   │   ├── event.go           # Audit event
 │   │   └── errors.go          # Domain error types
+│   ├── auth/                  # JWT authentication utilities
 │   ├── port/                  # Interfaces (contracts between layers)
 │   │   ├── repository.go      # Data access interfaces
 │   │   ├── staking_provider.go # Third-party provider abstraction
@@ -197,6 +258,9 @@ Import `postman/rain-staking.postman_collection.json` into Postman for a pre-bui
 | Append-only audit log | Complete traceability for compliance |
 | sqlc over ORM | Compile-time type safety, no runtime magic, reviewable SQL |
 | slog over third-party loggers | Zero dependencies, stdlib support, sufficient for this workload |
+| JWT auth with interceptor | Cross-cutting authentication separated from business logic |
+| Authorization in handlers | Resource ownership checks require business context (stake lookups) |
+| NotFound for ownership violations | Prevents resource enumeration via 403 vs 404 probing |
 
 ## Scaling & Production Considerations
 

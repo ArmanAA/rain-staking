@@ -1,4 +1,4 @@
-.PHONY: build run test test-integration lint proto-gen sqlc-gen migrate-up migrate-down docker-up docker-down clean
+.PHONY: build run test test-integration lint proto-gen sqlc-gen migrate-up migrate-down docker-up docker-down clean token
 
 # Build
 build:
@@ -50,6 +50,10 @@ docker-down:
 
 docker-build:
 	docker compose build
+
+# Auth
+token:
+	@go run cmd/tokengen/main.go
 
 # Cleanup
 clean:

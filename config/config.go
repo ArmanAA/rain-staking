@@ -28,6 +28,9 @@ type Config struct {
 	// Reward Poller
 	RewardPollInterval time.Duration `envconfig:"REWARD_POLL_INTERVAL" default:"5m"`
 
+	// Authentication
+	JWTSecret string `envconfig:"JWT_SECRET" default:"dev-secret-do-not-use-in-production"`
+
 	// Logging
 	LogLevel string `envconfig:"LOG_LEVEL" default:"info"`
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 
 	pb "github.com/ArmanAA/rain-staking/gen/staking/v1"
@@ -88,6 +89,8 @@ func main() {
 		grpc.ChainUnaryInterceptor(
 			grpcadapter.RecoveryInterceptor(logger),
 			grpcadapter.LoggingInterceptor(logger),
+			grpcadapter.AuthInterceptor(cfg.JWTSecret),
+			grpcadapter.ValidationInterceptor(),
 		),
 	)
 	handler := grpcadapter.NewStakingHandler(stakingSvc, balanceSvc, rewardSvc)
@@ -107,9 +110,11 @@ func main() {
 		}
 	}()
 
-	// HTTP gateway (REST proxy for gRPC)
+	// HTTP gateway (REST proxy that dials back to gRPC server, ensuring
+	// all requests pass through the full interceptor chain including auth)
 	mux := runtime.NewServeMux()
-	if err := pb.RegisterStakingServiceHandlerServer(ctx, mux, handler); err != nil {
+	dialOpts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	if err := pb.RegisterStakingServiceHandlerFromEndpoint(ctx, mux, fmt.Sprintf("localhost:%d", cfg.GRPCPort), dialOpts); err != nil {
 		logger.Error("failed to register HTTP gateway", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
