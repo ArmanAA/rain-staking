@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/shopspring/decimal"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -86,6 +87,19 @@ func (h *StakingHandler) Unstake(ctx context.Context, req *pb.UnstakeRequest) (*
 		return nil, domainErrorToGRPC(err)
 	}
 	return &pb.UnstakeResponse{Stake: stakeToProto(stake)}, nil
+}
+
+func (h *StakingHandler) CreateBalance(ctx context.Context, req *pb.CreateBalanceRequest) (*pb.CreateBalanceResponse, error) {
+	amount, err := decimal.NewFromString(req.Available)
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid amount")
+	}
+
+	balance, err := h.balanceSvc.CreateOrUpdateBalance(ctx, req.CustomerId, req.Asset, amount)
+	if err != nil {
+		return nil, domainErrorToGRPC(err)
+	}
+	return &pb.CreateBalanceResponse{Balance: balanceToProto(balance)}, nil
 }
 
 func (h *StakingHandler) GetBalance(ctx context.Context, req *pb.GetBalanceRequest) (*pb.GetBalanceResponse, error) {

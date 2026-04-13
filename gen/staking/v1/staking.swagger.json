@@ -45,6 +45,43 @@
         "tags": [
           "StakingService"
         ]
+      },
+      "post": {
+        "summary": "CreateBalance creates or updates a customer's balance for an asset.",
+        "operationId": "StakingService_CreateBalance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateBalanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/StakingServiceCreateBalanceBody"
+            }
+          }
+        ],
+        "tags": [
+          "StakingService"
+        ]
       }
     },
     "/v1/customers/{customerId}/balances/{asset}": {
@@ -315,6 +352,17 @@
     }
   },
   "definitions": {
+    "StakingServiceCreateBalanceBody": {
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string"
+        },
+        "available": {
+          "type": "string"
+        }
+      }
+    },
     "StakingServiceUnstakeBody": {
       "type": "object",
       "properties": {
@@ -375,6 +423,14 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "v1CreateBalanceResponse": {
+      "type": "object",
+      "properties": {
+        "balance": {
+          "$ref": "#/definitions/v1Balance"
         }
       }
     },

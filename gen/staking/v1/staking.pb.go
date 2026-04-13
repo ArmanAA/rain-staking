@@ -608,6 +608,110 @@ func (x *Stake) GetUpdatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+type CreateBalanceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	CustomerId    string                 `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
+	Asset         string                 `protobuf:"bytes,2,opt,name=asset,proto3" json:"asset,omitempty"`
+	Available     string                 `protobuf:"bytes,3,opt,name=available,proto3" json:"available,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateBalanceRequest) Reset() {
+	*x = CreateBalanceRequest{}
+	mi := &file_staking_v1_staking_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateBalanceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateBalanceRequest) ProtoMessage() {}
+
+func (x *CreateBalanceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_staking_v1_staking_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateBalanceRequest.ProtoReflect.Descriptor instead.
+func (*CreateBalanceRequest) Descriptor() ([]byte, []int) {
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *CreateBalanceRequest) GetCustomerId() string {
+	if x != nil {
+		return x.CustomerId
+	}
+	return ""
+}
+
+func (x *CreateBalanceRequest) GetAsset() string {
+	if x != nil {
+		return x.Asset
+	}
+	return ""
+}
+
+func (x *CreateBalanceRequest) GetAvailable() string {
+	if x != nil {
+		return x.Available
+	}
+	return ""
+}
+
+type CreateBalanceResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Balance       *Balance               `protobuf:"bytes,1,opt,name=balance,proto3" json:"balance,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateBalanceResponse) Reset() {
+	*x = CreateBalanceResponse{}
+	mi := &file_staking_v1_staking_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateBalanceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateBalanceResponse) ProtoMessage() {}
+
+func (x *CreateBalanceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_staking_v1_staking_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateBalanceResponse.ProtoReflect.Descriptor instead.
+func (*CreateBalanceResponse) Descriptor() ([]byte, []int) {
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *CreateBalanceResponse) GetBalance() *Balance {
+	if x != nil {
+		return x.Balance
+	}
+	return nil
+}
+
 type GetBalanceRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	CustomerId    string                 `protobuf:"bytes,1,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
@@ -618,7 +722,7 @@ type GetBalanceRequest struct {
 
 func (x *GetBalanceRequest) Reset() {
 	*x = GetBalanceRequest{}
-	mi := &file_staking_v1_staking_proto_msgTypes[9]
+	mi := &file_staking_v1_staking_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -630,7 +734,7 @@ func (x *GetBalanceRequest) String() string {
 func (*GetBalanceRequest) ProtoMessage() {}
 
 func (x *GetBalanceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_staking_v1_staking_proto_msgTypes[9]
+	mi := &file_staking_v1_staking_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -643,7 +747,7 @@ func (x *GetBalanceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetBalanceRequest.ProtoReflect.Descriptor instead.
 func (*GetBalanceRequest) Descriptor() ([]byte, []int) {
-	return file_staking_v1_staking_proto_rawDescGZIP(), []int{9}
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GetBalanceRequest) GetCustomerId() string {
@@ -669,7 +773,7 @@ type GetBalanceResponse struct {
 
 func (x *GetBalanceResponse) Reset() {
 	*x = GetBalanceResponse{}
-	mi := &file_staking_v1_staking_proto_msgTypes[10]
+	mi := &file_staking_v1_staking_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -681,7 +785,7 @@ func (x *GetBalanceResponse) String() string {
 func (*GetBalanceResponse) ProtoMessage() {}
 
 func (x *GetBalanceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_staking_v1_staking_proto_msgTypes[10]
+	mi := &file_staking_v1_staking_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -694,7 +798,7 @@ func (x *GetBalanceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetBalanceResponse.ProtoReflect.Descriptor instead.
 func (*GetBalanceResponse) Descriptor() ([]byte, []int) {
-	return file_staking_v1_staking_proto_rawDescGZIP(), []int{10}
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GetBalanceResponse) GetBalance() *Balance {
@@ -713,7 +817,7 @@ type ListBalancesRequest struct {
 
 func (x *ListBalancesRequest) Reset() {
 	*x = ListBalancesRequest{}
-	mi := &file_staking_v1_staking_proto_msgTypes[11]
+	mi := &file_staking_v1_staking_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -725,7 +829,7 @@ func (x *ListBalancesRequest) String() string {
 func (*ListBalancesRequest) ProtoMessage() {}
 
 func (x *ListBalancesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_staking_v1_staking_proto_msgTypes[11]
+	mi := &file_staking_v1_staking_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -738,7 +842,7 @@ func (x *ListBalancesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListBalancesRequest.ProtoReflect.Descriptor instead.
 func (*ListBalancesRequest) Descriptor() ([]byte, []int) {
-	return file_staking_v1_staking_proto_rawDescGZIP(), []int{11}
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *ListBalancesRequest) GetCustomerId() string {
@@ -757,7 +861,7 @@ type ListBalancesResponse struct {
 
 func (x *ListBalancesResponse) Reset() {
 	*x = ListBalancesResponse{}
-	mi := &file_staking_v1_staking_proto_msgTypes[12]
+	mi := &file_staking_v1_staking_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -769,7 +873,7 @@ func (x *ListBalancesResponse) String() string {
 func (*ListBalancesResponse) ProtoMessage() {}
 
 func (x *ListBalancesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_staking_v1_staking_proto_msgTypes[12]
+	mi := &file_staking_v1_staking_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -782,7 +886,7 @@ func (x *ListBalancesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListBalancesResponse.ProtoReflect.Descriptor instead.
 func (*ListBalancesResponse) Descriptor() ([]byte, []int) {
-	return file_staking_v1_staking_proto_rawDescGZIP(), []int{12}
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *ListBalancesResponse) GetBalances() []*Balance {
@@ -807,7 +911,7 @@ type Balance struct {
 
 func (x *Balance) Reset() {
 	*x = Balance{}
-	mi := &file_staking_v1_staking_proto_msgTypes[13]
+	mi := &file_staking_v1_staking_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -819,7 +923,7 @@ func (x *Balance) String() string {
 func (*Balance) ProtoMessage() {}
 
 func (x *Balance) ProtoReflect() protoreflect.Message {
-	mi := &file_staking_v1_staking_proto_msgTypes[13]
+	mi := &file_staking_v1_staking_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -832,7 +936,7 @@ func (x *Balance) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Balance.ProtoReflect.Descriptor instead.
 func (*Balance) Descriptor() ([]byte, []int) {
-	return file_staking_v1_staking_proto_rawDescGZIP(), []int{13}
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *Balance) GetId() string {
@@ -893,7 +997,7 @@ type GetRewardsSummaryRequest struct {
 
 func (x *GetRewardsSummaryRequest) Reset() {
 	*x = GetRewardsSummaryRequest{}
-	mi := &file_staking_v1_staking_proto_msgTypes[14]
+	mi := &file_staking_v1_staking_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -905,7 +1009,7 @@ func (x *GetRewardsSummaryRequest) String() string {
 func (*GetRewardsSummaryRequest) ProtoMessage() {}
 
 func (x *GetRewardsSummaryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_staking_v1_staking_proto_msgTypes[14]
+	mi := &file_staking_v1_staking_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -918,7 +1022,7 @@ func (x *GetRewardsSummaryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRewardsSummaryRequest.ProtoReflect.Descriptor instead.
 func (*GetRewardsSummaryRequest) Descriptor() ([]byte, []int) {
-	return file_staking_v1_staking_proto_rawDescGZIP(), []int{14}
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GetRewardsSummaryRequest) GetStakeId() string {
@@ -937,7 +1041,7 @@ type GetRewardsSummaryResponse struct {
 
 func (x *GetRewardsSummaryResponse) Reset() {
 	*x = GetRewardsSummaryResponse{}
-	mi := &file_staking_v1_staking_proto_msgTypes[15]
+	mi := &file_staking_v1_staking_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -949,7 +1053,7 @@ func (x *GetRewardsSummaryResponse) String() string {
 func (*GetRewardsSummaryResponse) ProtoMessage() {}
 
 func (x *GetRewardsSummaryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_staking_v1_staking_proto_msgTypes[15]
+	mi := &file_staking_v1_staking_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -962,7 +1066,7 @@ func (x *GetRewardsSummaryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRewardsSummaryResponse.ProtoReflect.Descriptor instead.
 func (*GetRewardsSummaryResponse) Descriptor() ([]byte, []int) {
-	return file_staking_v1_staking_proto_rawDescGZIP(), []int{15}
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GetRewardsSummaryResponse) GetSummary() *RewardsSummary {
@@ -985,7 +1089,7 @@ type RewardsSummary struct {
 
 func (x *RewardsSummary) Reset() {
 	*x = RewardsSummary{}
-	mi := &file_staking_v1_staking_proto_msgTypes[16]
+	mi := &file_staking_v1_staking_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -997,7 +1101,7 @@ func (x *RewardsSummary) String() string {
 func (*RewardsSummary) ProtoMessage() {}
 
 func (x *RewardsSummary) ProtoReflect() protoreflect.Message {
-	mi := &file_staking_v1_staking_proto_msgTypes[16]
+	mi := &file_staking_v1_staking_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1010,7 +1114,7 @@ func (x *RewardsSummary) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RewardsSummary.ProtoReflect.Descriptor instead.
 func (*RewardsSummary) Descriptor() ([]byte, []int) {
-	return file_staking_v1_staking_proto_rawDescGZIP(), []int{16}
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *RewardsSummary) GetStakeId() string {
@@ -1059,7 +1163,7 @@ type ListRewardHistoryRequest struct {
 
 func (x *ListRewardHistoryRequest) Reset() {
 	*x = ListRewardHistoryRequest{}
-	mi := &file_staking_v1_staking_proto_msgTypes[17]
+	mi := &file_staking_v1_staking_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1071,7 +1175,7 @@ func (x *ListRewardHistoryRequest) String() string {
 func (*ListRewardHistoryRequest) ProtoMessage() {}
 
 func (x *ListRewardHistoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_staking_v1_staking_proto_msgTypes[17]
+	mi := &file_staking_v1_staking_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1084,7 +1188,7 @@ func (x *ListRewardHistoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRewardHistoryRequest.ProtoReflect.Descriptor instead.
 func (*ListRewardHistoryRequest) Descriptor() ([]byte, []int) {
-	return file_staking_v1_staking_proto_rawDescGZIP(), []int{17}
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *ListRewardHistoryRequest) GetStakeId() string {
@@ -1118,7 +1222,7 @@ type ListRewardHistoryResponse struct {
 
 func (x *ListRewardHistoryResponse) Reset() {
 	*x = ListRewardHistoryResponse{}
-	mi := &file_staking_v1_staking_proto_msgTypes[18]
+	mi := &file_staking_v1_staking_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1130,7 +1234,7 @@ func (x *ListRewardHistoryResponse) String() string {
 func (*ListRewardHistoryResponse) ProtoMessage() {}
 
 func (x *ListRewardHistoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_staking_v1_staking_proto_msgTypes[18]
+	mi := &file_staking_v1_staking_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1143,7 +1247,7 @@ func (x *ListRewardHistoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRewardHistoryResponse.ProtoReflect.Descriptor instead.
 func (*ListRewardHistoryResponse) Descriptor() ([]byte, []int) {
-	return file_staking_v1_staking_proto_rawDescGZIP(), []int{18}
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *ListRewardHistoryResponse) GetRewards() []*Reward {
@@ -1174,7 +1278,7 @@ type Reward struct {
 
 func (x *Reward) Reset() {
 	*x = Reward{}
-	mi := &file_staking_v1_staking_proto_msgTypes[19]
+	mi := &file_staking_v1_staking_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1186,7 +1290,7 @@ func (x *Reward) String() string {
 func (*Reward) ProtoMessage() {}
 
 func (x *Reward) ProtoReflect() protoreflect.Message {
-	mi := &file_staking_v1_staking_proto_msgTypes[19]
+	mi := &file_staking_v1_staking_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1199,7 +1303,7 @@ func (x *Reward) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Reward.ProtoReflect.Descriptor instead.
 func (*Reward) Descriptor() ([]byte, []int) {
-	return file_staking_v1_staking_proto_rawDescGZIP(), []int{19}
+	return file_staking_v1_staking_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *Reward) GetId() string {
@@ -1289,7 +1393,14 @@ const file_staking_v1_staking_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"J\n" +
+	"updated_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"k\n" +
+	"\x14CreateBalanceRequest\x12\x1f\n" +
+	"\vcustomer_id\x18\x01 \x01(\tR\n" +
+	"customerId\x12\x14\n" +
+	"\x05asset\x18\x02 \x01(\tR\x05asset\x12\x1c\n" +
+	"\tavailable\x18\x03 \x01(\tR\tavailable\"F\n" +
+	"\x15CreateBalanceResponse\x12-\n" +
+	"\abalance\x18\x01 \x01(\v2\x13.staking.v1.BalanceR\abalance\"J\n" +
 	"\x11GetBalanceRequest\x12\x1f\n" +
 	"\vcustomer_id\x18\x01 \x01(\tR\n" +
 	"customerId\x12\x14\n" +
@@ -1346,14 +1457,15 @@ const file_staking_v1_staking_proto_rawDesc = "" +
 	"\x12STAKE_STATE_ACTIVE\x10\x03\x12\x19\n" +
 	"\x15STAKE_STATE_UNSTAKING\x10\x04\x12\x19\n" +
 	"\x15STAKE_STATE_WITHDRAWN\x10\x05\x12\x16\n" +
-	"\x12STAKE_STATE_FAILED\x10\x062\xe5\a\n" +
+	"\x12STAKE_STATE_FAILED\x10\x062\xed\b\n" +
 	"\x0eStakingService\x12e\n" +
 	"\vCreateStake\x12\x1e.staking.v1.CreateStakeRequest\x1a\x1f.staking.v1.CreateStakeResponse\"\x15\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +
 	"/v1/stakes\x12d\n" +
 	"\bGetStake\x12\x1b.staking.v1.GetStakeRequest\x1a\x1c.staking.v1.GetStakeResponse\"\x1d\x82\xd3\xe4\x93\x02\x17\x12\x15/v1/stakes/{stake_id}\x12w\n" +
 	"\n" +
 	"ListStakes\x12\x1d.staking.v1.ListStakesRequest\x1a\x1e.staking.v1.ListStakesResponse\"*\x82\xd3\xe4\x93\x02$\x12\"/v1/customers/{customer_id}/stakes\x12l\n" +
-	"\aUnstake\x12\x1a.staking.v1.UnstakeRequest\x1a\x1b.staking.v1.UnstakeResponse\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/stakes/{stake_id}/unstake\x12\x81\x01\n" +
+	"\aUnstake\x12\x1a.staking.v1.UnstakeRequest\x1a\x1b.staking.v1.UnstakeResponse\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/stakes/{stake_id}/unstake\x12\x85\x01\n" +
+	"\rCreateBalance\x12 .staking.v1.CreateBalanceRequest\x1a!.staking.v1.CreateBalanceResponse\"/\x82\xd3\xe4\x93\x02):\x01*\"$/v1/customers/{customer_id}/balances\x12\x81\x01\n" +
 	"\n" +
 	"GetBalance\x12\x1d.staking.v1.GetBalanceRequest\x1a\x1e.staking.v1.GetBalanceResponse\"4\x82\xd3\xe4\x93\x02.\x12,/v1/customers/{customer_id}/balances/{asset}\x12\x7f\n" +
 	"\fListBalances\x12\x1f.staking.v1.ListBalancesRequest\x1a .staking.v1.ListBalancesResponse\",\x82\xd3\xe4\x93\x02&\x12$/v1/customers/{customer_id}/balances\x12\x87\x01\n" +
@@ -1373,7 +1485,7 @@ func file_staking_v1_staking_proto_rawDescGZIP() []byte {
 }
 
 var file_staking_v1_staking_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_staking_v1_staking_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_staking_v1_staking_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_staking_v1_staking_proto_goTypes = []any{
 	(StakeState)(0),                   // 0: staking.v1.StakeState
 	(*CreateStakeRequest)(nil),        // 1: staking.v1.CreateStakeRequest
@@ -1385,18 +1497,20 @@ var file_staking_v1_staking_proto_goTypes = []any{
 	(*UnstakeRequest)(nil),            // 7: staking.v1.UnstakeRequest
 	(*UnstakeResponse)(nil),           // 8: staking.v1.UnstakeResponse
 	(*Stake)(nil),                     // 9: staking.v1.Stake
-	(*GetBalanceRequest)(nil),         // 10: staking.v1.GetBalanceRequest
-	(*GetBalanceResponse)(nil),        // 11: staking.v1.GetBalanceResponse
-	(*ListBalancesRequest)(nil),       // 12: staking.v1.ListBalancesRequest
-	(*ListBalancesResponse)(nil),      // 13: staking.v1.ListBalancesResponse
-	(*Balance)(nil),                   // 14: staking.v1.Balance
-	(*GetRewardsSummaryRequest)(nil),  // 15: staking.v1.GetRewardsSummaryRequest
-	(*GetRewardsSummaryResponse)(nil), // 16: staking.v1.GetRewardsSummaryResponse
-	(*RewardsSummary)(nil),            // 17: staking.v1.RewardsSummary
-	(*ListRewardHistoryRequest)(nil),  // 18: staking.v1.ListRewardHistoryRequest
-	(*ListRewardHistoryResponse)(nil), // 19: staking.v1.ListRewardHistoryResponse
-	(*Reward)(nil),                    // 20: staking.v1.Reward
-	(*timestamppb.Timestamp)(nil),     // 21: google.protobuf.Timestamp
+	(*CreateBalanceRequest)(nil),      // 10: staking.v1.CreateBalanceRequest
+	(*CreateBalanceResponse)(nil),     // 11: staking.v1.CreateBalanceResponse
+	(*GetBalanceRequest)(nil),         // 12: staking.v1.GetBalanceRequest
+	(*GetBalanceResponse)(nil),        // 13: staking.v1.GetBalanceResponse
+	(*ListBalancesRequest)(nil),       // 14: staking.v1.ListBalancesRequest
+	(*ListBalancesResponse)(nil),      // 15: staking.v1.ListBalancesResponse
+	(*Balance)(nil),                   // 16: staking.v1.Balance
+	(*GetRewardsSummaryRequest)(nil),  // 17: staking.v1.GetRewardsSummaryRequest
+	(*GetRewardsSummaryResponse)(nil), // 18: staking.v1.GetRewardsSummaryResponse
+	(*RewardsSummary)(nil),            // 19: staking.v1.RewardsSummary
+	(*ListRewardHistoryRequest)(nil),  // 20: staking.v1.ListRewardHistoryRequest
+	(*ListRewardHistoryResponse)(nil), // 21: staking.v1.ListRewardHistoryResponse
+	(*Reward)(nil),                    // 22: staking.v1.Reward
+	(*timestamppb.Timestamp)(nil),     // 23: google.protobuf.Timestamp
 }
 var file_staking_v1_staking_proto_depIdxs = []int32{
 	9,  // 0: staking.v1.CreateStakeResponse.stake:type_name -> staking.v1.Stake
@@ -1404,36 +1518,39 @@ var file_staking_v1_staking_proto_depIdxs = []int32{
 	9,  // 2: staking.v1.ListStakesResponse.stakes:type_name -> staking.v1.Stake
 	9,  // 3: staking.v1.UnstakeResponse.stake:type_name -> staking.v1.Stake
 	0,  // 4: staking.v1.Stake.state:type_name -> staking.v1.StakeState
-	21, // 5: staking.v1.Stake.created_at:type_name -> google.protobuf.Timestamp
-	21, // 6: staking.v1.Stake.updated_at:type_name -> google.protobuf.Timestamp
-	14, // 7: staking.v1.GetBalanceResponse.balance:type_name -> staking.v1.Balance
-	14, // 8: staking.v1.ListBalancesResponse.balances:type_name -> staking.v1.Balance
-	21, // 9: staking.v1.Balance.updated_at:type_name -> google.protobuf.Timestamp
-	17, // 10: staking.v1.GetRewardsSummaryResponse.summary:type_name -> staking.v1.RewardsSummary
-	21, // 11: staking.v1.RewardsSummary.last_reward_at:type_name -> google.protobuf.Timestamp
-	20, // 12: staking.v1.ListRewardHistoryResponse.rewards:type_name -> staking.v1.Reward
-	21, // 13: staking.v1.Reward.created_at:type_name -> google.protobuf.Timestamp
-	1,  // 14: staking.v1.StakingService.CreateStake:input_type -> staking.v1.CreateStakeRequest
-	3,  // 15: staking.v1.StakingService.GetStake:input_type -> staking.v1.GetStakeRequest
-	5,  // 16: staking.v1.StakingService.ListStakes:input_type -> staking.v1.ListStakesRequest
-	7,  // 17: staking.v1.StakingService.Unstake:input_type -> staking.v1.UnstakeRequest
-	10, // 18: staking.v1.StakingService.GetBalance:input_type -> staking.v1.GetBalanceRequest
-	12, // 19: staking.v1.StakingService.ListBalances:input_type -> staking.v1.ListBalancesRequest
-	15, // 20: staking.v1.StakingService.GetRewardsSummary:input_type -> staking.v1.GetRewardsSummaryRequest
-	18, // 21: staking.v1.StakingService.ListRewardHistory:input_type -> staking.v1.ListRewardHistoryRequest
-	2,  // 22: staking.v1.StakingService.CreateStake:output_type -> staking.v1.CreateStakeResponse
-	4,  // 23: staking.v1.StakingService.GetStake:output_type -> staking.v1.GetStakeResponse
-	6,  // 24: staking.v1.StakingService.ListStakes:output_type -> staking.v1.ListStakesResponse
-	8,  // 25: staking.v1.StakingService.Unstake:output_type -> staking.v1.UnstakeResponse
-	11, // 26: staking.v1.StakingService.GetBalance:output_type -> staking.v1.GetBalanceResponse
-	13, // 27: staking.v1.StakingService.ListBalances:output_type -> staking.v1.ListBalancesResponse
-	16, // 28: staking.v1.StakingService.GetRewardsSummary:output_type -> staking.v1.GetRewardsSummaryResponse
-	19, // 29: staking.v1.StakingService.ListRewardHistory:output_type -> staking.v1.ListRewardHistoryResponse
-	22, // [22:30] is the sub-list for method output_type
-	14, // [14:22] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	23, // 5: staking.v1.Stake.created_at:type_name -> google.protobuf.Timestamp
+	23, // 6: staking.v1.Stake.updated_at:type_name -> google.protobuf.Timestamp
+	16, // 7: staking.v1.CreateBalanceResponse.balance:type_name -> staking.v1.Balance
+	16, // 8: staking.v1.GetBalanceResponse.balance:type_name -> staking.v1.Balance
+	16, // 9: staking.v1.ListBalancesResponse.balances:type_name -> staking.v1.Balance
+	23, // 10: staking.v1.Balance.updated_at:type_name -> google.protobuf.Timestamp
+	19, // 11: staking.v1.GetRewardsSummaryResponse.summary:type_name -> staking.v1.RewardsSummary
+	23, // 12: staking.v1.RewardsSummary.last_reward_at:type_name -> google.protobuf.Timestamp
+	22, // 13: staking.v1.ListRewardHistoryResponse.rewards:type_name -> staking.v1.Reward
+	23, // 14: staking.v1.Reward.created_at:type_name -> google.protobuf.Timestamp
+	1,  // 15: staking.v1.StakingService.CreateStake:input_type -> staking.v1.CreateStakeRequest
+	3,  // 16: staking.v1.StakingService.GetStake:input_type -> staking.v1.GetStakeRequest
+	5,  // 17: staking.v1.StakingService.ListStakes:input_type -> staking.v1.ListStakesRequest
+	7,  // 18: staking.v1.StakingService.Unstake:input_type -> staking.v1.UnstakeRequest
+	10, // 19: staking.v1.StakingService.CreateBalance:input_type -> staking.v1.CreateBalanceRequest
+	12, // 20: staking.v1.StakingService.GetBalance:input_type -> staking.v1.GetBalanceRequest
+	14, // 21: staking.v1.StakingService.ListBalances:input_type -> staking.v1.ListBalancesRequest
+	17, // 22: staking.v1.StakingService.GetRewardsSummary:input_type -> staking.v1.GetRewardsSummaryRequest
+	20, // 23: staking.v1.StakingService.ListRewardHistory:input_type -> staking.v1.ListRewardHistoryRequest
+	2,  // 24: staking.v1.StakingService.CreateStake:output_type -> staking.v1.CreateStakeResponse
+	4,  // 25: staking.v1.StakingService.GetStake:output_type -> staking.v1.GetStakeResponse
+	6,  // 26: staking.v1.StakingService.ListStakes:output_type -> staking.v1.ListStakesResponse
+	8,  // 27: staking.v1.StakingService.Unstake:output_type -> staking.v1.UnstakeResponse
+	11, // 28: staking.v1.StakingService.CreateBalance:output_type -> staking.v1.CreateBalanceResponse
+	13, // 29: staking.v1.StakingService.GetBalance:output_type -> staking.v1.GetBalanceResponse
+	15, // 30: staking.v1.StakingService.ListBalances:output_type -> staking.v1.ListBalancesResponse
+	18, // 31: staking.v1.StakingService.GetRewardsSummary:output_type -> staking.v1.GetRewardsSummaryResponse
+	21, // 32: staking.v1.StakingService.ListRewardHistory:output_type -> staking.v1.ListRewardHistoryResponse
+	24, // [24:33] is the sub-list for method output_type
+	15, // [15:24] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_staking_v1_staking_proto_init() }
@@ -1447,7 +1564,7 @@ func file_staking_v1_staking_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_staking_v1_staking_proto_rawDesc), len(file_staking_v1_staking_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   20,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

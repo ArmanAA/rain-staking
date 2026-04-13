@@ -23,6 +23,7 @@ const (
 	StakingService_GetStake_FullMethodName          = "/staking.v1.StakingService/GetStake"
 	StakingService_ListStakes_FullMethodName        = "/staking.v1.StakingService/ListStakes"
 	StakingService_Unstake_FullMethodName           = "/staking.v1.StakingService/Unstake"
+	StakingService_CreateBalance_FullMethodName     = "/staking.v1.StakingService/CreateBalance"
 	StakingService_GetBalance_FullMethodName        = "/staking.v1.StakingService/GetBalance"
 	StakingService_ListBalances_FullMethodName      = "/staking.v1.StakingService/ListBalances"
 	StakingService_GetRewardsSummary_FullMethodName = "/staking.v1.StakingService/GetRewardsSummary"
@@ -44,6 +45,8 @@ type StakingServiceClient interface {
 	ListStakes(ctx context.Context, in *ListStakesRequest, opts ...grpc.CallOption) (*ListStakesResponse, error)
 	// Unstake initiates the unstaking process for an active staking position.
 	Unstake(ctx context.Context, in *UnstakeRequest, opts ...grpc.CallOption) (*UnstakeResponse, error)
+	// CreateBalance creates or updates a customer's balance for an asset.
+	CreateBalance(ctx context.Context, in *CreateBalanceRequest, opts ...grpc.CallOption) (*CreateBalanceResponse, error)
 	// GetBalance retrieves a customer's balance for a specific asset.
 	GetBalance(ctx context.Context, in *GetBalanceRequest, opts ...grpc.CallOption) (*GetBalanceResponse, error)
 	// ListBalances retrieves all balances for a customer.
@@ -96,6 +99,16 @@ func (c *stakingServiceClient) Unstake(ctx context.Context, in *UnstakeRequest, 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UnstakeResponse)
 	err := c.cc.Invoke(ctx, StakingService_Unstake_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stakingServiceClient) CreateBalance(ctx context.Context, in *CreateBalanceRequest, opts ...grpc.CallOption) (*CreateBalanceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateBalanceResponse)
+	err := c.cc.Invoke(ctx, StakingService_CreateBalance_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -157,6 +170,8 @@ type StakingServiceServer interface {
 	ListStakes(context.Context, *ListStakesRequest) (*ListStakesResponse, error)
 	// Unstake initiates the unstaking process for an active staking position.
 	Unstake(context.Context, *UnstakeRequest) (*UnstakeResponse, error)
+	// CreateBalance creates or updates a customer's balance for an asset.
+	CreateBalance(context.Context, *CreateBalanceRequest) (*CreateBalanceResponse, error)
 	// GetBalance retrieves a customer's balance for a specific asset.
 	GetBalance(context.Context, *GetBalanceRequest) (*GetBalanceResponse, error)
 	// ListBalances retrieves all balances for a customer.
@@ -186,6 +201,9 @@ func (UnimplementedStakingServiceServer) ListStakes(context.Context, *ListStakes
 }
 func (UnimplementedStakingServiceServer) Unstake(context.Context, *UnstakeRequest) (*UnstakeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method Unstake not implemented")
+}
+func (UnimplementedStakingServiceServer) CreateBalance(context.Context, *CreateBalanceRequest) (*CreateBalanceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateBalance not implemented")
 }
 func (UnimplementedStakingServiceServer) GetBalance(context.Context, *GetBalanceRequest) (*GetBalanceResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetBalance not implemented")
@@ -292,6 +310,24 @@ func _StakingService_Unstake_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StakingService_CreateBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateBalanceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StakingServiceServer).CreateBalance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StakingService_CreateBalance_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StakingServiceServer).CreateBalance(ctx, req.(*CreateBalanceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _StakingService_GetBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetBalanceRequest)
 	if err := dec(in); err != nil {
@@ -386,6 +422,10 @@ var StakingService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Unstake",
 			Handler:    _StakingService_Unstake_Handler,
+		},
+		{
+			MethodName: "CreateBalance",
+			Handler:    _StakingService_CreateBalance_Handler,
 		},
 		{
 			MethodName: "GetBalance",
