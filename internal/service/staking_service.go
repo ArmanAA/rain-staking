@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/shopspring/decimal"
 
@@ -24,6 +25,7 @@ type StakingService struct {
 	balanceRepo port.BalanceRepository
 	provider    port.StakingProvider
 	publisher   port.EventPublisher
+	logger      *slog.Logger
 }
 
 func NewStakingService(
@@ -31,12 +33,14 @@ func NewStakingService(
 	balanceRepo port.BalanceRepository,
 	provider port.StakingProvider,
 	publisher port.EventPublisher,
+	logger *slog.Logger,
 ) *StakingService {
 	return &StakingService{
 		stakeRepo:   stakeRepo,
 		balanceRepo: balanceRepo,
 		provider:    provider,
 		publisher:   publisher,
+		logger:      logger,
 	}
 }
 
@@ -94,11 +98,17 @@ func (s *StakingService) CreateStake(ctx context.Context, req CreateStakeRequest
 		// Provider failed — mark stake as failed and release the hold
 		stake.Fail(err.Error())
 		stake.Version++
-		s.stakeRepo.Update(ctx, stake)
+		if updateErr := s.stakeRepo.Update(ctx, stake); updateErr != nil {
+			s.logger.ErrorContext(ctx, "failed to mark stake as failed",
+				slog.String("stake_id", stake.ID), slog.String("error", updateErr.Error()))
+		}
 
 		balance.ReleaseHold(amount)
 		balance.Version++
-		s.balanceRepo.Update(ctx, balance)
+		if updateErr := s.balanceRepo.Update(ctx, balance); updateErr != nil {
+			s.logger.ErrorContext(ctx, "failed to release balance hold after provider failure",
+				slog.String("stake_id", stake.ID), slog.String("error", updateErr.Error()))
+		}
 
 		return nil, fmt.Errorf("provider stake failed: %w", err)
 	}

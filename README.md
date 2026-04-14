@@ -57,7 +57,7 @@ Dependencies flow inward. The domain layer has zero external dependencies.
 
 | Component | Technology | Rationale |
 |-----------|-----------|-----------|
-| Language | Go 1.22+ | Required |
+| Language | Go 1.25+ | Required |
 | API | gRPC + grpc-gateway | Type-safe internal comms + REST for frontends |
 | Database | PostgreSQL (pgx + sqlc) | Best Go performance, compile-time type safety |
 | Migrations | golang-migrate | Industry standard, reversible |
@@ -70,7 +70,7 @@ Dependencies flow inward. The domain layer has zero external dependencies.
 
 ### Prerequisites
 - Docker and Docker Compose
-- Go 1.22+ (for local development)
+- Go 1.25+ (for local development)
 
 ### Quick Start (Docker)
 ```bash

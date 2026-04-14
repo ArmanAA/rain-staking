@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"log/slog"
+	"os"
 	"testing"
 
 	"github.com/shopspring/decimal"
@@ -11,6 +13,8 @@ import (
 	"github.com/ArmanAA/rain-staking/internal/domain"
 	"github.com/ArmanAA/rain-staking/internal/port"
 )
+
+var testLogger = slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelError}))
 
 // --- In-memory fakes for testing ---
 
@@ -150,7 +154,7 @@ func TestCreateStake(t *testing.T) {
 		balance.Available = decimal.NewFromFloat(100.0)
 		balanceRepo.Upsert(context.Background(), balance)
 
-		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, publisher)
+		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, publisher, testLogger)
 
 		stake, err := svc.CreateStake(context.Background(), CreateStakeRequest{
 			CustomerID:     "cust-1",
@@ -182,7 +186,7 @@ func TestCreateStake(t *testing.T) {
 		balance.Available = decimal.NewFromFloat(10.0)
 		balanceRepo.Upsert(context.Background(), balance)
 
-		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, &fakeEventPublisher{})
+		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, &fakeEventPublisher{}, testLogger)
 
 		_, err := svc.CreateStake(context.Background(), CreateStakeRequest{
 			CustomerID:     "cust-1",
@@ -202,7 +206,7 @@ func TestCreateStake(t *testing.T) {
 		balance.Available = decimal.NewFromFloat(100.0)
 		balanceRepo.Upsert(context.Background(), balance)
 
-		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, &fakeEventPublisher{})
+		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, &fakeEventPublisher{}, testLogger)
 
 		// First call
 		stake1, err := svc.CreateStake(context.Background(), CreateStakeRequest{
@@ -225,7 +229,7 @@ func TestCreateStake(t *testing.T) {
 	})
 
 	t.Run("invalid amount", func(t *testing.T) {
-		svc := NewStakingService(newFakeStakeRepo(), newFakeBalanceRepo(), &fakeProvider{}, &fakeEventPublisher{})
+		svc := NewStakingService(newFakeStakeRepo(), newFakeBalanceRepo(), &fakeProvider{}, &fakeEventPublisher{}, testLogger)
 
 		_, err := svc.CreateStake(context.Background(), CreateStakeRequest{
 			CustomerID:     "cust-1",
@@ -254,7 +258,7 @@ func TestUnstake(t *testing.T) {
 		balance.Staked = decimal.NewFromFloat(32.0)
 		balanceRepo.Upsert(context.Background(), balance)
 
-		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, publisher)
+		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, publisher, testLogger)
 
 		result, err := svc.Unstake(context.Background(), stake.ID, "idem-unstake-1")
 
@@ -270,7 +274,7 @@ func TestUnstake(t *testing.T) {
 		stake, _ := domain.NewStake("cust-1", "ETH", decimal.NewFromFloat(32.0), "idem-1")
 		stakeRepo.Create(context.Background(), stake) // Still PENDING
 
-		svc := NewStakingService(stakeRepo, newFakeBalanceRepo(), &fakeProvider{}, &fakeEventPublisher{})
+		svc := NewStakingService(stakeRepo, newFakeBalanceRepo(), &fakeProvider{}, &fakeEventPublisher{}, testLogger)
 
 		_, err := svc.Unstake(context.Background(), stake.ID, "idem-unstake-2")
 

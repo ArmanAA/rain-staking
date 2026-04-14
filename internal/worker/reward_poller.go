@@ -109,7 +109,11 @@ func (p *RewardPoller) reconcileDelegating(ctx context.Context) {
 				continue
 			}
 			balance.Version++
-			p.balanceRepo.Update(ctx, balance)
+			if err := p.balanceRepo.Update(ctx, balance); err != nil {
+				p.logger.ErrorContext(ctx, "failed to update balance after stake activation",
+					slog.String("stake_id", stake.ID), slog.String("error", err.Error()))
+				continue
+			}
 
 			p.publisher.Publish(ctx, domain.NewAuditEvent(
 				"stake", stake.ID, "stake.activated", "system",
@@ -121,14 +125,21 @@ func (p *RewardPoller) reconcileDelegating(ctx context.Context) {
 		case port.ProviderStakeStatusFailed:
 			stake.Fail("provider reported failure")
 			stake.Version++
-			p.stakeRepo.Update(ctx, stake)
+			if err := p.stakeRepo.Update(ctx, stake); err != nil {
+				p.logger.ErrorContext(ctx, "failed to update stake to failed state",
+					slog.String("stake_id", stake.ID), slog.String("error", err.Error()))
+				continue
+			}
 
 			// Release hold on balance
 			balance, err := p.balanceRepo.GetByCustomerAndAsset(ctx, stake.CustomerID, stake.Asset)
 			if err == nil {
 				balance.ReleaseHold(stake.Amount)
 				balance.Version++
-				p.balanceRepo.Update(ctx, balance)
+				if err := p.balanceRepo.Update(ctx, balance); err != nil {
+					p.logger.ErrorContext(ctx, "failed to release balance hold after stake failure",
+						slog.String("stake_id", stake.ID), slog.String("error", err.Error()))
+				}
 			}
 
 			p.publisher.Publish(ctx, domain.NewAuditEvent(
@@ -172,7 +183,11 @@ func (p *RewardPoller) reconcileUnstaking(ctx context.Context) {
 				continue
 			}
 			balance.Version++
-			p.balanceRepo.Update(ctx, balance)
+			if err := p.balanceRepo.Update(ctx, balance); err != nil {
+				p.logger.ErrorContext(ctx, "failed to update balance after withdrawal",
+					slog.String("stake_id", stake.ID), slog.String("error", err.Error()))
+				continue
+			}
 
 			p.publisher.Publish(ctx, domain.NewAuditEvent(
 				"stake", stake.ID, "stake.withdrawn", "system", nil,
@@ -233,7 +248,11 @@ func (p *RewardPoller) fetchRewards(ctx context.Context) {
 			}
 			balance.AddReward(entry.Amount)
 			balance.Version++
-			p.balanceRepo.Update(ctx, balance)
+			if err := p.balanceRepo.Update(ctx, balance); err != nil {
+				p.logger.ErrorContext(ctx, "failed to update balance with reward",
+					slog.String("stake_id", stake.ID), slog.String("error", err.Error()))
+				continue
+			}
 
 			p.logger.InfoContext(ctx, "reward recorded",
 				slog.String("stake_id", stake.ID),

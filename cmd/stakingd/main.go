@@ -80,7 +80,7 @@ func main() {
 	}
 
 	// Application services
-	stakingSvc := service.NewStakingService(stakeRepo, balanceRepo, stakingProvider, publisher)
+	stakingSvc := service.NewStakingService(stakeRepo, balanceRepo, stakingProvider, publisher, logger)
 	balanceSvc := service.NewBalanceService(balanceRepo, publisher)
 	rewardSvc := service.NewRewardService(rewardRepo)
 
