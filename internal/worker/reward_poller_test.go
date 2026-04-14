@@ -178,13 +178,13 @@ func TestReconcileDelegating_ActivatesStake(t *testing.T) {
 
 	// Create a DELEGATING stake
 	stake, _ := domain.NewStake("cust-1", "ETH", decimal.NewFromFloat(32), "idem-1")
-	stake.Delegate("0xval", "prov-ref-1")
-	stakeRepo.Create(context.Background(), stake)
+	_ = stake.Delegate("0xval", "prov-ref-1")
+	_ = stakeRepo.Create(context.Background(), stake)
 
 	// Create balance with 32 in pending
 	balance := domain.NewBalance("cust-1", "ETH")
 	balance.Pending = decimal.NewFromFloat(32)
-	balanceRepo.Upsert(context.Background(), balance)
+	_ = balanceRepo.Upsert(context.Background(), balance)
 
 	// Provider says stake is active
 	provider.stakeStatuses["prov-ref-1"] = port.ProviderStakeStatusActive
@@ -213,12 +213,12 @@ func TestReconcileDelegating_FailedStake(t *testing.T) {
 	publisher := &fakeEventPublisher{}
 
 	stake, _ := domain.NewStake("cust-1", "ETH", decimal.NewFromFloat(32), "idem-1")
-	stake.Delegate("0xval", "prov-ref-1")
-	stakeRepo.Create(context.Background(), stake)
+	_ = stake.Delegate("0xval", "prov-ref-1")
+	_ = stakeRepo.Create(context.Background(), stake)
 
 	balance := domain.NewBalance("cust-1", "ETH")
 	balance.Pending = decimal.NewFromFloat(32)
-	balanceRepo.Upsert(context.Background(), balance)
+	_ = balanceRepo.Upsert(context.Background(), balance)
 
 	// Provider says stake failed
 	provider.stakeStatuses["prov-ref-1"] = port.ProviderStakeStatusFailed
@@ -247,14 +247,14 @@ func TestReconcileUnstaking_WithdrawsStake(t *testing.T) {
 
 	// Create an UNSTAKING stake
 	stake, _ := domain.NewStake("cust-1", "ETH", decimal.NewFromFloat(32), "idem-1")
-	stake.Delegate("0xval", "prov-ref-1")
-	stake.Activate()
-	stake.Unstake()
-	stakeRepo.Create(context.Background(), stake)
+	_ = stake.Delegate("0xval", "prov-ref-1")
+	_ = stake.Activate()
+	_ = stake.Unstake()
+	_ = stakeRepo.Create(context.Background(), stake)
 
 	balance := domain.NewBalance("cust-1", "ETH")
 	balance.Staked = decimal.NewFromFloat(32)
-	balanceRepo.Upsert(context.Background(), balance)
+	_ = balanceRepo.Upsert(context.Background(), balance)
 
 	// Provider says withdrawn
 	provider.stakeStatuses["prov-ref-1"] = port.ProviderStakeStatusWithdrawn
@@ -283,14 +283,14 @@ func TestFetchRewards_CreatesRewardAndUpdatesBalance(t *testing.T) {
 
 	// Create an ACTIVE stake
 	stake, _ := domain.NewStake("cust-1", "ETH", decimal.NewFromFloat(32), "idem-1")
-	stake.Delegate("0xval", "prov-ref-1")
-	stake.Activate()
-	stakeRepo.Create(context.Background(), stake)
+	_ = stake.Delegate("0xval", "prov-ref-1")
+	_ = stake.Activate()
+	_ = stakeRepo.Create(context.Background(), stake)
 
 	balance := domain.NewBalance("cust-1", "ETH")
 	balance.Available = decimal.NewFromFloat(68)
 	balance.Staked = decimal.NewFromFloat(32)
-	balanceRepo.Upsert(context.Background(), balance)
+	_ = balanceRepo.Upsert(context.Background(), balance)
 
 	// Provider returns a reward
 	provider.rewards["prov-ref-1"] = []port.RewardEntry{
@@ -317,14 +317,14 @@ func TestFetchRewards_DuplicateRewardIsIdempotent(t *testing.T) {
 	provider := newFakeProvider()
 
 	stake, _ := domain.NewStake("cust-1", "ETH", decimal.NewFromFloat(32), "idem-1")
-	stake.Delegate("0xval", "prov-ref-1")
-	stake.Activate()
-	stakeRepo.Create(context.Background(), stake)
+	_ = stake.Delegate("0xval", "prov-ref-1")
+	_ = stake.Activate()
+	_ = stakeRepo.Create(context.Background(), stake)
 
 	balance := domain.NewBalance("cust-1", "ETH")
 	balance.Available = decimal.NewFromFloat(68)
 	balance.Staked = decimal.NewFromFloat(32)
-	balanceRepo.Upsert(context.Background(), balance)
+	_ = balanceRepo.Upsert(context.Background(), balance)
 
 	provider.rewards["prov-ref-1"] = []port.RewardEntry{
 		{Amount: decimal.NewFromFloat(0.01), RewardDate: "2026-04-14"},
@@ -347,10 +347,10 @@ func TestReconcileUnstaking_NotYetWithdrawn(t *testing.T) {
 	provider := newFakeProvider()
 
 	stake, _ := domain.NewStake("cust-1", "ETH", decimal.NewFromFloat(32), "idem-1")
-	stake.Delegate("0xval", "prov-ref-1")
-	stake.Activate()
-	stake.Unstake()
-	stakeRepo.Create(context.Background(), stake)
+	_ = stake.Delegate("0xval", "prov-ref-1")
+	_ = stake.Activate()
+	_ = stake.Unstake()
+	_ = stakeRepo.Create(context.Background(), stake)
 
 	// Provider still shows active (unbonding not complete)
 	provider.stakeStatuses["prov-ref-1"] = port.ProviderStakeStatusActive

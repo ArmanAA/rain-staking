@@ -147,7 +147,7 @@ func main() {
 
 	cancel() // Stop reward poller
 	grpcServer.GracefulStop()
-	httpServer.Shutdown(context.Background())
+	_ = httpServer.Shutdown(context.Background())
 
 	logger.Info("server shutdown complete")
 }

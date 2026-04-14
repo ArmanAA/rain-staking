@@ -152,7 +152,7 @@ func TestCreateStake(t *testing.T) {
 		// Set up customer with 100 ETH available
 		balance := domain.NewBalance("cust-1", "ETH")
 		balance.Available = decimal.NewFromFloat(100.0)
-		balanceRepo.Upsert(context.Background(), balance)
+		_ = balanceRepo.Upsert(context.Background(), balance)
 
 		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, publisher, testLogger)
 
@@ -184,7 +184,7 @@ func TestCreateStake(t *testing.T) {
 
 		balance := domain.NewBalance("cust-1", "ETH")
 		balance.Available = decimal.NewFromFloat(10.0)
-		balanceRepo.Upsert(context.Background(), balance)
+		_ = balanceRepo.Upsert(context.Background(), balance)
 
 		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, &fakeEventPublisher{}, testLogger)
 
@@ -204,7 +204,7 @@ func TestCreateStake(t *testing.T) {
 
 		balance := domain.NewBalance("cust-1", "ETH")
 		balance.Available = decimal.NewFromFloat(100.0)
-		balanceRepo.Upsert(context.Background(), balance)
+		_ = balanceRepo.Upsert(context.Background(), balance)
 
 		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, &fakeEventPublisher{}, testLogger)
 
@@ -250,13 +250,13 @@ func TestUnstake(t *testing.T) {
 
 		// Set up an active stake
 		stake, _ := domain.NewStake("cust-1", "ETH", decimal.NewFromFloat(32.0), "idem-1")
-		stake.Delegate("0xvalidator", "provider-ref-123")
-		stake.Activate()
-		stakeRepo.Create(context.Background(), stake)
+		_ = stake.Delegate("0xvalidator", "provider-ref-123")
+		_ = stake.Activate()
+		_ = stakeRepo.Create(context.Background(), stake)
 
 		balance := domain.NewBalance("cust-1", "ETH")
 		balance.Staked = decimal.NewFromFloat(32.0)
-		balanceRepo.Upsert(context.Background(), balance)
+		_ = balanceRepo.Upsert(context.Background(), balance)
 
 		svc := NewStakingService(stakeRepo, balanceRepo, &fakeProvider{}, publisher, testLogger)
 
@@ -272,7 +272,7 @@ func TestUnstake(t *testing.T) {
 		stakeRepo := newFakeStakeRepo()
 
 		stake, _ := domain.NewStake("cust-1", "ETH", decimal.NewFromFloat(32.0), "idem-1")
-		stakeRepo.Create(context.Background(), stake) // Still PENDING
+		_ = stakeRepo.Create(context.Background(), stake) // Still PENDING
 
 		svc := NewStakingService(stakeRepo, newFakeBalanceRepo(), &fakeProvider{}, &fakeEventPublisher{}, testLogger)
 

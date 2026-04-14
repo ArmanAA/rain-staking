@@ -115,7 +115,7 @@ func (p *RewardPoller) reconcileDelegating(ctx context.Context) {
 				continue
 			}
 
-			p.publisher.Publish(ctx, domain.NewAuditEvent(
+			_ = p.publisher.Publish(ctx, domain.NewAuditEvent(
 				"stake", stake.ID, "stake.activated", "system",
 				map[string]any{"validator": status.Validator},
 			))
@@ -123,7 +123,7 @@ func (p *RewardPoller) reconcileDelegating(ctx context.Context) {
 			p.logger.InfoContext(ctx, "stake activated", slog.String("stake_id", stake.ID))
 
 		case port.ProviderStakeStatusFailed:
-			stake.Fail("provider reported failure")
+			_ = stake.Fail("provider reported failure")
 			stake.Version++
 			if err := p.stakeRepo.Update(ctx, stake); err != nil {
 				p.logger.ErrorContext(ctx, "failed to update stake to failed state",
@@ -134,7 +134,7 @@ func (p *RewardPoller) reconcileDelegating(ctx context.Context) {
 			// Release hold on balance
 			balance, err := p.balanceRepo.GetByCustomerAndAsset(ctx, stake.CustomerID, stake.Asset)
 			if err == nil {
-				balance.ReleaseHold(stake.Amount)
+				_ = balance.ReleaseHold(stake.Amount)
 				balance.Version++
 				if err := p.balanceRepo.Update(ctx, balance); err != nil {
 					p.logger.ErrorContext(ctx, "failed to release balance hold after stake failure",
@@ -142,7 +142,7 @@ func (p *RewardPoller) reconcileDelegating(ctx context.Context) {
 				}
 			}
 
-			p.publisher.Publish(ctx, domain.NewAuditEvent(
+			_ = p.publisher.Publish(ctx, domain.NewAuditEvent(
 				"stake", stake.ID, "stake.failed", "system", nil,
 			))
 		}
@@ -189,7 +189,7 @@ func (p *RewardPoller) reconcileUnstaking(ctx context.Context) {
 				continue
 			}
 
-			p.publisher.Publish(ctx, domain.NewAuditEvent(
+			_ = p.publisher.Publish(ctx, domain.NewAuditEvent(
 				"stake", stake.ID, "stake.withdrawn", "system", nil,
 			))
 
@@ -246,7 +246,7 @@ func (p *RewardPoller) fetchRewards(ctx context.Context) {
 			if err != nil {
 				continue
 			}
-			balance.AddReward(entry.Amount)
+			_ = balance.AddReward(entry.Amount)
 			balance.Version++
 			if err := p.balanceRepo.Update(ctx, balance); err != nil {
 				p.logger.ErrorContext(ctx, "failed to update balance with reward",

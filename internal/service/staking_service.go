@@ -96,14 +96,14 @@ func (s *StakingService) CreateStake(ctx context.Context, req CreateStakeRequest
 	})
 	if err != nil {
 		// Provider failed — mark stake as failed and release the hold
-		stake.Fail(err.Error())
+		_ = stake.Fail(err.Error())
 		stake.Version++
 		if updateErr := s.stakeRepo.Update(ctx, stake); updateErr != nil {
 			s.logger.ErrorContext(ctx, "failed to mark stake as failed",
 				slog.String("stake_id", stake.ID), slog.String("error", updateErr.Error()))
 		}
 
-		balance.ReleaseHold(amount)
+		_ = balance.ReleaseHold(amount)
 		balance.Version++
 		if updateErr := s.balanceRepo.Update(ctx, balance); updateErr != nil {
 			s.logger.ErrorContext(ctx, "failed to release balance hold after provider failure",
@@ -124,7 +124,7 @@ func (s *StakingService) CreateStake(ctx context.Context, req CreateStakeRequest
 	}
 
 	// Publish audit event
-	s.publisher.Publish(ctx, domain.NewAuditEvent(
+	_ = s.publisher.Publish(ctx, domain.NewAuditEvent(
 		"stake", stake.ID, "stake.created", req.CustomerID,
 		map[string]any{
 			"amount":       req.Amount,
@@ -157,7 +157,7 @@ func (s *StakingService) Unstake(ctx context.Context, stakeID, idempotencyKey st
 		return nil, fmt.Errorf("updating stake: %w", err)
 	}
 
-	s.publisher.Publish(ctx, domain.NewAuditEvent(
+	_ = s.publisher.Publish(ctx, domain.NewAuditEvent(
 		"stake", stake.ID, "stake.unstake_requested", stake.CustomerID,
 		map[string]any{"stake_id": stakeID},
 	))

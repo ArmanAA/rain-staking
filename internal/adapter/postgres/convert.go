@@ -10,7 +10,7 @@ import (
 
 func toUUID(s string) pgtype.UUID {
 	var u pgtype.UUID
-	u.Scan(s)
+	_ = u.Scan(s)
 	return u
 }
 

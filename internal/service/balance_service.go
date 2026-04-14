@@ -43,7 +43,7 @@ func (s *BalanceService) CreateOrUpdateBalance(ctx context.Context, customerID, 
 				return nil, err
 			}
 
-			s.publisher.Publish(ctx, domain.NewAuditEvent(
+			_ = s.publisher.Publish(ctx, domain.NewAuditEvent(
 				"balance", balance.ID, "balance.created", customerID,
 				map[string]any{"asset": asset, "available": available.String()},
 			))

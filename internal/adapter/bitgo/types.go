@@ -36,18 +36,7 @@ type unstakeRequest struct {
 	Type   string `json:"type"`
 }
 
-// BitGo status values mapped to our provider status.
+// BitGo delegation status values.
 const (
-	bitgoStatusNew             = "NEW"
-	bitgoStatusPendingApproval = "PENDING_APPROVAL"
-	bitgoStatusApproved        = "APPROVED"
-	bitgoStatusSigned          = "SIGNED"
-	bitgoStatusDelivered       = "DELIVERED"
-	bitgoStatusFailed          = "FAILED"
-	bitgoStatusRejected        = "REJECTED"
-)
-
-const (
-	bitgoDelegationPending = "PENDING"
-	bitgoDelegationActive  = "ACTIVE"
+	bitgoDelegationActive = "ACTIVE"
 )
