@@ -32,7 +32,7 @@ type stakingWalletResponse struct {
 }
 
 type unstakeRequest struct {
-	Amount string `json:"amount"`
+	Amount string `json:"amount,omitempty"`
 	Type   string `json:"type"`
 }
 

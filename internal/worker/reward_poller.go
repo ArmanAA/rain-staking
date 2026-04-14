@@ -167,19 +167,27 @@ func (p *RewardPoller) reconcileUnstaking(ctx context.Context) {
 
 		if status.Status == port.ProviderStakeStatusWithdrawn {
 			if err := stake.Withdraw(); err != nil {
+				p.logger.ErrorContext(ctx, "failed to withdraw stake",
+					slog.String("stake_id", stake.ID), slog.String("error", err.Error()))
 				continue
 			}
 			stake.Version++
 			if err := p.stakeRepo.Update(ctx, stake); err != nil {
+				p.logger.ErrorContext(ctx, "failed to update stake after withdrawal",
+					slog.String("stake_id", stake.ID), slog.String("error", err.Error()))
 				continue
 			}
 
 			// Move balance from staked to available
 			balance, err := p.balanceRepo.GetByCustomerAndAsset(ctx, stake.CustomerID, stake.Asset)
 			if err != nil {
+				p.logger.ErrorContext(ctx, "failed to get balance for withdrawal",
+					slog.String("stake_id", stake.ID), slog.String("error", err.Error()))
 				continue
 			}
 			if err := balance.CompleteUnstake(stake.Amount); err != nil {
+				p.logger.ErrorContext(ctx, "failed to complete unstake on balance",
+					slog.String("stake_id", stake.ID), slog.String("error", err.Error()))
 				continue
 			}
 			balance.Version++
@@ -217,6 +225,8 @@ func (p *RewardPoller) fetchRewards(ctx context.Context) {
 		for _, entry := range entries {
 			rewardDate, err := time.Parse("2006-01-02", entry.RewardDate)
 			if err != nil {
+				p.logger.WarnContext(ctx, "failed to parse reward date",
+					slog.String("stake_id", stake.ID), slog.String("date", entry.RewardDate))
 				continue
 			}
 
@@ -233,17 +243,21 @@ func (p *RewardPoller) fetchRewards(ctx context.Context) {
 				entry.Amount, cumulative, rewardDate,
 			)
 			if err != nil {
+				p.logger.WarnContext(ctx, "failed to create reward entity",
+					slog.String("stake_id", stake.ID), slog.String("error", err.Error()))
 				continue
 			}
 
 			if err := p.rewardRepo.Create(ctx, reward); err != nil {
-				// Duplicate reward_date — idempotent, skip
+				// Duplicate reward_date — idempotent, skip silently
 				continue
 			}
 
 			// Add reward to customer's available balance
 			balance, err := p.balanceRepo.GetByCustomerAndAsset(ctx, stake.CustomerID, stake.Asset)
 			if err != nil {
+				p.logger.ErrorContext(ctx, "failed to get balance for reward",
+					slog.String("stake_id", stake.ID), slog.String("error", err.Error()))
 				continue
 			}
 			_ = balance.AddReward(entry.Amount)

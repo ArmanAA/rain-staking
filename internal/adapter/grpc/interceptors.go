@@ -97,7 +97,7 @@ func RecoveryInterceptor(logger *slog.Logger) grpc.UnaryServerInterceptor {
 					slog.String("method", info.FullMethod),
 					slog.Any("panic", r),
 				)
-				err = status.Errorf(14, "internal server error") // codes.Unavailable
+				err = status.Error(codes.Internal, "internal server error")
 			}
 		}()
 		return handler(ctx, req)

@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -28,16 +29,21 @@ import (
 )
 
 func main() {
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelInfo,
-	}))
-	slog.SetDefault(logger)
-
 	cfg, err := config.Load()
 	if err != nil {
-		logger.Error("failed to load config", slog.String("error", err.Error()))
+		slog.Error("failed to load config", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
+
+	var logLevel slog.Level
+	if err := logLevel.UnmarshalText([]byte(cfg.LogLevel)); err != nil {
+		slog.Error("invalid log level, defaulting to info", slog.String("configured", cfg.LogLevel))
+		logLevel = slog.LevelInfo
+	}
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: logLevel,
+	}))
+	slog.SetDefault(logger)
 
 	// Database connection pool
 	ctx, cancel := context.WithCancel(context.Background())
@@ -147,7 +153,10 @@ func main() {
 
 	cancel() // Stop reward poller
 	grpcServer.GracefulStop()
-	_ = httpServer.Shutdown(context.Background())
+
+	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer shutdownCancel()
+	_ = httpServer.Shutdown(shutdownCtx)
 
 	logger.Info("server shutdown complete")
 }

@@ -10,6 +10,7 @@ services:
       GRPC_PORT: 9090
       HTTP_PORT: 8080
       REWARD_POLL_INTERVAL: 30s
+      JWT_SECRET: dev-secret-do-not-use-in-production
       LOG_LEVEL: info
     depends_on:
       postgres:

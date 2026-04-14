@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/shopspring/decimal"
 	"google.golang.org/grpc/codes"
@@ -171,13 +172,19 @@ func (h *StakingHandler) GetRewardsSummary(ctx context.Context, req *pb.GetRewar
 		return nil, domainErrorToGRPC(err)
 	}
 
-	return &pb.GetRewardsSummaryResponse{
-		Summary: &pb.RewardsSummary{
-			StakeId:      req.StakeId,
-			TotalRewards: summary.TotalRewards,
-			RewardCount:  summary.RewardCount,
-		},
-	}, nil
+	pbSummary := &pb.RewardsSummary{
+		StakeId:      req.StakeId,
+		TotalRewards: summary.TotalRewards,
+		RewardCount:  summary.RewardCount,
+	}
+	if summary.LastRewardAt != nil {
+		t, err := time.Parse("2006-01-02", *summary.LastRewardAt)
+		if err == nil {
+			pbSummary.LastRewardAt = timestamppb.New(t)
+		}
+	}
+
+	return &pb.GetRewardsSummaryResponse{Summary: pbSummary}, nil
 }
 
 func (h *StakingHandler) ListRewardHistory(ctx context.Context, req *pb.ListRewardHistoryRequest) (*pb.ListRewardHistoryResponse, error) {
@@ -265,7 +272,7 @@ func balanceToProto(b *domain.Balance) *pb.Balance {
 // domainErrorToGRPC maps domain errors to appropriate gRPC status codes.
 func domainErrorToGRPC(err error) error {
 	switch {
-	case errors.Is(err, domain.ErrStakeNotFound), errors.Is(err, domain.ErrBalanceNotFound):
+	case errors.Is(err, domain.ErrStakeNotFound), errors.Is(err, domain.ErrBalanceNotFound), errors.Is(err, domain.ErrRewardNotFound):
 		return status.Error(codes.NotFound, err.Error())
 	case errors.Is(err, domain.ErrInsufficientBalance):
 		return status.Error(codes.FailedPrecondition, err.Error())

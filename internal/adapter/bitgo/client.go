@@ -63,13 +63,13 @@ func (c *Client) Stake(ctx context.Context, req port.StakeRequest) (*port.StakeR
 }
 
 func (c *Client) Unstake(ctx context.Context, providerRef string) error {
-	// BitGo uses the same endpoint with type "UNSTAKE"
 	body := unstakeRequest{
 		Type: "UNSTAKE",
 	}
 
 	var resp stakingRequestResponse
-	err := c.doRequest(ctx, http.MethodPost, c.stakingPath("/requests"), body, &resp)
+	path := c.stakingPath(fmt.Sprintf("/requests/%s/unstake", providerRef))
+	err := c.doRequest(ctx, http.MethodPost, path, body, &resp)
 	if err != nil {
 		return fmt.Errorf("bitgo unstake request: %w", err)
 	}
