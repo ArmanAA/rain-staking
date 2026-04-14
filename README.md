@@ -19,6 +19,14 @@ A microservice that enables customers to stake Ethereum through BitGo's custodia
 - KYC/compliance checks
 - Validator node operation (handled by BitGo)
 
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Design](docs/DESIGN.md) | Architecture, data model, API design, and implementation approach |
+| [Decisions](docs/DECISIONS.md) | Key technical trade-offs and rationale (12 decisions) |
+| [Testing](docs/TESTING.md) | Testing strategy, patterns, and coverage analysis |
+
 ## Architecture
 
 ```
