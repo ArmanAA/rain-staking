@@ -143,6 +143,12 @@ func (s *StakingService) Unstake(ctx context.Context, stakeID, idempotencyKey st
 		return nil, err
 	}
 
+	// Idempotency: if the stake is already unstaking or withdrawn, the operation
+	// was already processed — return the current state without calling the provider again.
+	if stake.State == domain.StakeStateUnstaking || stake.State == domain.StakeStateWithdrawn {
+		return stake, nil
+	}
+
 	if err := stake.Unstake(); err != nil {
 		return nil, err
 	}
