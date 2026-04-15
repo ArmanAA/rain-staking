@@ -26,6 +26,7 @@ A microservice that enables customers to stake Ethereum through BitGo's custodia
 | [Design](docs/DESIGN.md) | Architecture, data model, API design, and implementation approach |
 | [Decisions](docs/DECISIONS.md) | Key technical trade-offs and rationale (12 decisions) |
 | [Testing](docs/TESTING.md) | Testing strategy, patterns, and coverage analysis |
+| [Architecture Diagram](docs/ARCHITECTURE.md) | End-to-end system diagram ([view rendered](https://github.com/ArmanAA/rain-staking/blob/main/docs/ARCHITECTURE.md)) |
 
 ## Architecture
 
